@@ -55,18 +55,9 @@ const projects: Project[] = [
 
 const industries = ["Homes", "Retail", "Offices", "Workshops", "Warehouses", "Small factories", "Building owners", "SMEs"];
 
-function Brand({ compact = false }: { compact?: boolean }) {
+function VolturaLogo({ compact = false }: { compact?: boolean }) {
   return (
-    <span className={`brand-lockup ${compact ? "compact" : ""}`}>
-      <span className="brand-mark" aria-hidden="true"><i /></span>
-      <span className="brand-copy"><b>VOLTURA</b>{!compact && <small>POWER &amp; ENGINEERING</small>}</span>
-    </span>
-  );
-}
-
-function HeaderBrand() {
-  return (
-    <span className="header-brand-lockup">
+    <span className={`header-brand-lockup ${compact ? "compact" : ""}`}>
       <span className="header-brand-mark-wrap" aria-hidden="true">
         <img className="header-brand-mark" src="/images/brand/voltura-mark.png" alt="" />
         <i className="header-brand-bolt" />
@@ -78,6 +69,11 @@ function HeaderBrand() {
       </span>
     </span>
   );
+}
+
+function IndustrySymbol({ industry }: { industry: string }) {
+  const symbol = industry.toLowerCase().replaceAll(" ", "-");
+  return <span className={`industry-symbol symbol-${symbol}`} aria-hidden="true"><i /><i /><i /><b /><em /></span>;
 }
 
 function SectionHeading({ eyebrow, title, copy }: { eyebrow: string; title: string; copy?: string }) {
@@ -224,7 +220,7 @@ export default function Home() {
   return (
     <main className="site-shell" id="home">
       <header className="site-header">
-        <a href="#home" className="brand-link" aria-label="Voltura Power and Engineering home" onClick={() => playTone(240)}><HeaderBrand /></a>
+        <a href="#home" className="brand-link" aria-label="Voltura Power and Engineering home" onClick={() => playTone(240)}><VolturaLogo /></a>
         <nav className="desktop-nav" aria-label="Primary navigation">
           <a href="#about">About</a>
           <details className="services-menu">
@@ -341,7 +337,7 @@ export default function Home() {
       <section className="industries-section" id="industries" data-sound-section>
         <SectionHeading eyebrow="03 — SECTORS" title="Where we work." copy="Support shaped around the operating realities of homes, small businesses and growing industrial spaces." />
         <div className="industry-grid">
-          {industries.map((industry, index) => <article key={industry} className="industry-card reveal"><span>{String(index + 1).padStart(2, "0")}</span><div className="industry-glyph"><i /><i /></div><h3>{industry}</h3><p>Electrical + mechanical support</p></article>)}
+          {industries.map((industry, index) => <article key={industry} className="industry-card reveal"><span>{String(index + 1).padStart(2, "0")}</span><IndustrySymbol industry={industry} /><h3>{industry}</h3><p>Electrical + mechanical support</p></article>)}
         </div>
       </section>
 
@@ -414,7 +410,7 @@ export default function Home() {
       <section className="contact-section" id="contact">
         <div className="contact-map"><iframe title="Voltura service area in Bintulu, Sarawak" loading="lazy" src="https://www.google.com/maps?q=Bintulu%2C%20Sarawak&output=embed" /></div>
         <div className="contact-details">
-          <Brand />
+          <VolturaLogo />
           <p>Electrical and mechanical support for Bintulu and surrounding areas.</p>
           <div className="contact-lines"><span><small>BASE</small>Bintulu, Sarawak, Malaysia</span><span><small>HOURS</small>Project scheduling by enquiry</span><span><small>CONTACT</small>Phone, WhatsApp and email to be confirmed</span></div>
           <a href="#quote" className="button primary">Request a quotation <span className="thunder-arrow">ϟ</span></a>
@@ -422,14 +418,14 @@ export default function Home() {
       </section>
 
       <footer>
-        <a href="#home"><Brand compact /></a>
+        <a href="#home" aria-label="Voltura Power and Engineering home"><VolturaLogo compact /></a>
         <p>Powering reliable engineering solutions.</p>
         <div className="footer-nav"><a href="#services">Services</a><a href="#projects">Projects</a><a href="#about">Company</a><a href="#contact">Contact</a></div>
         <small>© 2026 Voltura Power &amp; Engineering. Bintulu, Sarawak.</small>
         <div className="build-credit">
           <b>CREATED BY MEJALISM CORP.</b>
           <span>MADE IN SARAWAK</span>
-          <span>WEBSITE V1.4</span>
+          <span>WEBSITE V1.5</span>
         </div>
       </footer>
 
