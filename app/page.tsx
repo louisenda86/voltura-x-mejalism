@@ -74,7 +74,7 @@ function HeaderBrand() {
       <i className="header-brand-divider" aria-hidden="true" />
       <span className="header-brand-type">
         <img className="header-brand-wordmark" src="/images/brand/voltura-wordmark.png" alt="Voltura" />
-        <img className="header-brand-tagline" src="/images/brand/voltura-tagline.png" alt="Power and Engineering" />
+        <span className="header-brand-tagline">POWER &amp; ENGINEERING</span>
       </span>
     </span>
   );
@@ -100,10 +100,8 @@ export default function Home() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [heroProgress, setHeroProgress] = useState(0);
   const [formStatus, setFormStatus] = useState("");
-  const [electricBurst, setElectricBurst] = useState<{ x: number; y: number; id: number } | null>(null);
   const audioRef = useRef<AudioContext | null>(null);
   const heroRef = useRef<HTMLElement | null>(null);
-  const thunderCursorRef = useRef<HTMLSpanElement | null>(null);
 
   const filteredProjects = useMemo(
     () => projectFilter === "All" ? projects : projects.filter(project => project.category === projectFilter),
@@ -203,41 +201,6 @@ export default function Home() {
     }, { threshold: 0.55 });
     document.querySelectorAll("[data-sound-section]").forEach(section => observer.observe(section));
     return () => observer.disconnect();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [soundOn]);
-
-  useEffect(() => {
-    const cursor = thunderCursorRef.current;
-    if (!cursor || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-
-    const moveCursor = (event: PointerEvent) => {
-      cursor.style.left = `${event.clientX}px`;
-      cursor.style.top = `${event.clientY}px`;
-      cursor.classList.add("visible");
-    };
-    const electrify = (event: PointerEvent) => {
-      if (event.pointerType !== "mouse") return;
-      const id = Date.now();
-      cursor.classList.add("pressed");
-      setElectricBurst({ x: event.clientX, y: event.clientY, id });
-      playTone(520, 0.12, 0.03);
-      window.setTimeout(() => setElectricBurst(current => current?.id === id ? null : current), 620);
-    };
-    const release = () => cursor.classList.remove("pressed");
-    const hide = () => cursor.classList.remove("visible", "pressed");
-
-    window.addEventListener("pointermove", moveCursor, { passive: true });
-    window.addEventListener("pointerdown", electrify);
-    window.addEventListener("pointerup", release);
-    window.addEventListener("blur", hide);
-    document.documentElement.addEventListener("mouseleave", hide);
-    return () => {
-      window.removeEventListener("pointermove", moveCursor);
-      window.removeEventListener("pointerdown", electrify);
-      window.removeEventListener("pointerup", release);
-      window.removeEventListener("blur", hide);
-      document.documentElement.removeEventListener("mouseleave", hide);
-    };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [soundOn]);
 
@@ -465,23 +428,12 @@ export default function Home() {
         <small>© 2026 Voltura Power &amp; Engineering. Bintulu, Sarawak.</small>
         <div className="build-credit">
           <b>CREATED BY MEJALISM CORP.</b>
-          <span className="made-in-sarawak">
-            MADE IN SARAWAK
-            <svg className="sarawak-flag" role="img" aria-label="Sarawak flag" viewBox="0 0 48 24">
-              <rect width="48" height="24" fill="#f5d313" />
-              <path d="M-3 24 34-1h17L13 24Z" fill="#111820" />
-              <path d="M3 24 39-1h8L11 24Z" fill="#d6202a" />
-              <polygon points="11,3 12.2,7.1 15.7,4.6 14.2,8.6 18.5,8.4 14.8,10.6 18.5,13 14.2,12.7 15.7,16.8 12.2,14.2 11,18.4 9.8,14.2 6.3,16.8 7.8,12.7 3.5,13 7.2,10.6 3.5,8.4 7.8,8.6 6.3,4.6 9.8,7.1" fill="#f5d313" />
-            </svg>
-          </span>
-          <span>WEBSITE V1.3</span>
+          <span>MADE IN SARAWAK</span>
+          <span>WEBSITE V1.4</span>
         </div>
       </footer>
 
       <a className="scroll-bolt" href="#home" aria-label="Back to top" style={{ "--scroll": scrollProgress } as CSSProperties}><span>ϟ</span><i /></a>
-
-      {electricBurst && <span key={electricBurst.id} className="electric-burst" style={{ left: electricBurst.x, top: electricBurst.y }} aria-hidden="true"><i /><i /><i /><i /><i /><i /></span>}
-      <span ref={thunderCursorRef} className="thunder-cursor" aria-hidden="true"><i /></span>
 
       {selectedProject && (
         <div className="project-modal" role="dialog" aria-modal="true" aria-label={selectedProject.title} onClick={() => setSelectedProject(null)}>
