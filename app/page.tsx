@@ -59,12 +59,11 @@ function VolturaLogo({ compact = false }: { compact?: boolean }) {
   return (
     <span className={`header-brand-lockup ${compact ? "compact" : ""}`}>
       <span className="header-brand-mark-wrap" aria-hidden="true">
-        <img className="header-brand-mark" src="/images/brand/voltura-mark.png" alt="" />
-        <i className="header-brand-bolt" />
+        <img className="header-brand-mark" src="/images/brand/voltura-mark-transparent.png" alt="" />
       </span>
       <i className="header-brand-divider" aria-hidden="true" />
       <span className="header-brand-type">
-        <img className="header-brand-wordmark" src="/images/brand/voltura-wordmark.png" alt="Voltura" />
+        <img className="header-brand-wordmark" src="/images/brand/voltura-wordmark-transparent.png" alt="Voltura" />
         <span className="header-brand-tagline">POWER &amp; ENGINEERING</span>
       </span>
     </span>
@@ -425,7 +424,7 @@ export default function Home() {
         <div className="build-credit">
           <b>CREATED BY MEJALISM CORP.</b>
           <span>MADE IN SARAWAK</span>
-          <span>WEBSITE V1.5</span>
+          <span>WEBSITE V1.6</span>
         </div>
       </footer>
 
