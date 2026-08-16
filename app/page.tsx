@@ -64,6 +64,19 @@ function Brand({ compact = false }: { compact?: boolean }) {
   );
 }
 
+function HeaderBrand() {
+  return (
+    <span className="header-brand-lockup">
+      <img className="header-brand-mark" src="/images/brand/voltura-mark.png" alt="" />
+      <i aria-hidden="true" />
+      <span className="header-brand-type">
+        <img className="header-brand-wordmark" src="/images/brand/voltura-wordmark.png" alt="Voltura" />
+        <img className="header-brand-tagline" src="/images/brand/voltura-tagline.png" alt="Power and Engineering" />
+      </span>
+    </span>
+  );
+}
+
 function SectionHeading({ eyebrow, title, copy }: { eyebrow: string; title: string; copy?: string }) {
   return (
     <div className="section-heading reveal">
@@ -84,6 +97,7 @@ export default function Home() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [heroProgress, setHeroProgress] = useState(0);
   const [formStatus, setFormStatus] = useState("");
+  const [electricBurst, setElectricBurst] = useState<{ x: number; y: number; id: number } | null>(null);
   const audioRef = useRef<AudioContext | null>(null);
   const heroRef = useRef<HTMLElement | null>(null);
 
@@ -188,6 +202,20 @@ export default function Home() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [soundOn]);
 
+  useEffect(() => {
+    const electrify = (event: MouseEvent) => {
+      const target = event.target as HTMLElement | null;
+      const action = target?.closest("a, button");
+      if (!action?.textContent?.includes("ϟ")) return;
+      setElectricBurst({ x: event.clientX, y: event.clientY, id: Date.now() });
+      playTone(520, 0.12, 0.03);
+      window.setTimeout(() => setElectricBurst(null), 620);
+    };
+    document.addEventListener("click", electrify);
+    return () => document.removeEventListener("click", electrify);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [soundOn]);
+
   const phase = heroProgress < 0.32 ? 0 : heroProgress < 0.68 ? 1 : 2;
   const cubeStyle = {
     "--hero-p": heroProgress,
@@ -208,7 +236,7 @@ export default function Home() {
   return (
     <main className="site-shell" id="home">
       <header className="site-header">
-        <a href="#home" className="brand-link" aria-label="Voltura Power and Engineering home" onClick={() => playTone(240)}><Brand /></a>
+        <a href="#home" className="brand-link" aria-label="Voltura Power and Engineering home" onClick={() => playTone(240)}><HeaderBrand /></a>
         <nav className="desktop-nav" aria-label="Primary navigation">
           <a href="#about">About</a>
           <details className="services-menu">
@@ -231,14 +259,14 @@ export default function Home() {
           <button className={`icon-button ${soundOn ? "active" : ""}`} type="button" onClick={toggleSound} aria-label={soundOn ? "Mute interface sound" : "Enable interface sound"} title="Optional sound">
             <span aria-hidden="true">{soundOn ? "♪" : "×♪"}</span>
           </button>
-          <a href="#quote" className="header-cta" onClick={() => playTone(330)}>Get quotation <span>↗</span></a>
+          <a href="#quote" className="header-cta" onClick={() => playTone(330)}>Get quotation <span className="thunder-arrow">ϟ</span></a>
           <button className="menu-button" type="button" onClick={() => setMenuOpen(!menuOpen)} aria-expanded={menuOpen} aria-controls="mobile-menu" aria-label="Toggle navigation"><i /><i /></button>
         </div>
       </header>
 
       <div className={`mobile-nav ${menuOpen ? "open" : ""}`} id="mobile-menu">
-        {navItems.map(([label, href]) => <a key={label} href={href} onClick={() => { setMenuOpen(false); if (label.startsWith("Mechanical")) setActiveServices("mechanical"); if (label.startsWith("Electrical")) setActiveServices("electrical"); }}>{label}<span>↘</span></a>)}
-        <a href="#quote" className="mobile-quote" onClick={() => setMenuOpen(false)}>Get Quotation <span>↗</span></a>
+        {navItems.map(([label, href]) => <a key={label} href={href} onClick={() => { setMenuOpen(false); if (label.startsWith("Mechanical")) setActiveServices("mechanical"); if (label.startsWith("Electrical")) setActiveServices("electrical"); }}>{label}<span className="thunder-arrow">ϟ</span></a>)}
+        <a href="#quote" className="mobile-quote" onClick={() => setMenuOpen(false)}>Get Quotation <span className="thunder-arrow">ϟ</span></a>
       </div>
 
       <section className="hero-sequence" ref={heroRef} data-sound-section>
@@ -249,8 +277,8 @@ export default function Home() {
             <h1>Reliable power.<br /><span>Practical engineering.</span></h1>
             <p className="hero-text">Electrical and mechanical solutions for homes, businesses and growing industry.</p>
             <div className="hero-actions">
-              <a className="button primary magnetic" href="#services" onClick={() => playTone(330)}>Explore services <span>→</span></a>
-              <a className="button secondary" href="#quote" onClick={() => playTone(290)}>Request a quote <span>→</span></a>
+              <a className="button primary magnetic" href="#services" onClick={() => playTone(330)}>Explore services <span className="thunder-arrow">ϟ</span></a>
+              <a className="button secondary" href="#quote" onClick={() => playTone(290)}>Request a quote <span className="thunder-arrow">ϟ</span></a>
             </div>
             <div className="hero-microcopy"><span>01</span><p>Scroll to scale from local power work to advanced infrastructure.</p></div>
           </div>
@@ -286,6 +314,7 @@ export default function Home() {
       </section>
 
       <section className="manifesto-section" id="about" data-sound-section>
+        <div className="company-landmark" aria-hidden="true"><img src="/images/company/bintulu-landmark.webp" alt="" /><span /></div>
         <div className="manifesto-index">01 — COMPANY</div>
         <div className="manifesto-copy reveal">
           <p>Local response. Engineering discipline.</p>
@@ -314,7 +343,7 @@ export default function Home() {
               <div className="service-card-body">
                 <h3>{service.title}</h3><p>{service.description}</p>
                 <div className="service-benefits">{service.benefits.map(item => <span key={item}>{item}</span>)}</div>
-                <a href="#quote" onClick={() => playTone(310)}>Discuss this service <b>↗</b></a>
+                <a href="#quote" onClick={() => playTone(310)}>Discuss this service <b className="thunder-arrow">ϟ</b></a>
               </div>
             </article>
           ))}
@@ -359,7 +388,7 @@ export default function Home() {
               <img src={project.image} alt="" loading="lazy" />
               <span className="project-number">P{String(index + 1).padStart(2, "0")}</span>
               <div className="project-info"><p>{project.category} · Bintulu</p><h3>{project.title}</h3><span>{project.scope}</span></div>
-              <b>↗</b>
+              <b className="thunder-arrow">ϟ</b>
             </button>
           ))}
         </div>
@@ -374,7 +403,7 @@ export default function Home() {
             ["/images/services/lighting-upgrades.webp", "Efficient lighting"],
             ["/images/services/welding-repair.webp", "Controlled fabrication"],
             ["/images/services/earthing-grounding.webp", "Measured grounding"],
-          ].map(([image, label], index) => <figure key={label} className={`gallery-item gallery-${index + 1}`}><img src={image} alt={label} loading="lazy" /><figcaption>{label}<span>↗</span></figcaption></figure>)}
+          ].map(([image, label], index) => <figure key={label} className={`gallery-item gallery-${index + 1}`}><img src={image} alt={label} loading="lazy" /><figcaption>{label}<span className="thunder-arrow">ϟ</span></figcaption></figure>)}
         </div>
       </section>
 
@@ -389,7 +418,7 @@ export default function Home() {
           <div className="field-row"><label>Name<input name="name" required placeholder="Your name" /></label><label>Phone or email<input name="contact" required placeholder="Best way to reach you" /></label></div>
           <div className="field-row"><label>Service<select name="service" defaultValue=""><option value="" disabled>Select a service</option><option>Electrical installation</option><option>Electrical maintenance</option><option>Mechanical installation</option><option>Mechanical maintenance</option><option>Not sure yet</option></select></label><label>Site type<select name="site" defaultValue=""><option value="" disabled>Select site type</option>{industries.map(item => <option key={item}>{item}</option>)}</select></label></div>
           <label>Project details<textarea name="details" required rows={5} placeholder="Location, issue, preferred timing and any useful details" /></label>
-          <button className="submit-button" type="submit">Prepare quotation request <span>↗</span></button>
+          <button className="submit-button" type="submit">Prepare quotation request <span className="thunder-arrow">ϟ</span></button>
           {formStatus && <p className="form-status" role="status">{formStatus}</p>}
         </form>
       </section>
@@ -400,18 +429,21 @@ export default function Home() {
           <Brand />
           <p>Electrical and mechanical support for Bintulu and surrounding areas.</p>
           <div className="contact-lines"><span><small>BASE</small>Bintulu, Sarawak, Malaysia</span><span><small>HOURS</small>Project scheduling by enquiry</span><span><small>CONTACT</small>Phone, WhatsApp and email to be confirmed</span></div>
-          <a href="#quote" className="button primary">Request a quotation <span>→</span></a>
+          <a href="#quote" className="button primary">Request a quotation <span className="thunder-arrow">ϟ</span></a>
         </div>
       </section>
 
       <footer>
         <a href="#home"><Brand compact /></a>
         <p>Powering reliable engineering solutions.</p>
-        <div><a href="#services">Services</a><a href="#projects">Projects</a><a href="#about">Company</a><a href="#contact">Contact</a></div>
+        <div className="footer-nav"><a href="#services">Services</a><a href="#projects">Projects</a><a href="#about">Company</a><a href="#contact">Contact</a></div>
         <small>© 2026 Voltura Power &amp; Engineering. Bintulu, Sarawak.</small>
+        <div className="build-credit"><b>CREATED BY MEJALISM CORP.</b><span>MADE IN SARAWAK</span><span>WEBSITE V1.2</span></div>
       </footer>
 
       <a className="scroll-bolt" href="#home" aria-label="Back to top" style={{ "--scroll": scrollProgress } as CSSProperties}><span>ϟ</span><i /></a>
+
+      {electricBurst && <span key={electricBurst.id} className="electric-burst" style={{ left: electricBurst.x, top: electricBurst.y }} aria-hidden="true"><i /><i /><i /><i /><i /><i /></span>}
 
       {selectedProject && (
         <div className="project-modal" role="dialog" aria-modal="true" aria-label={selectedProject.title} onClick={() => setSelectedProject(null)}>
@@ -419,7 +451,7 @@ export default function Home() {
             <button type="button" aria-label="Close project details" onClick={() => setSelectedProject(null)}>×</button>
             <img src={selectedProject.image} alt={selectedProject.title} />
             <p>{selectedProject.category} · Bintulu, Sarawak</p><h2>{selectedProject.title}</h2><span>{selectedProject.scope}</span><small>{selectedProject.note}. Final scope depends on site assessment.</small>
-            <a href="#quote" onClick={() => setSelectedProject(null)}>Discuss a similar project <b>↗</b></a>
+            <a href="#quote" onClick={() => setSelectedProject(null)}>Discuss a similar project <b className="thunder-arrow">ϟ</b></a>
           </article>
         </div>
       )}
