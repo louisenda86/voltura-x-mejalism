@@ -35,13 +35,18 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Build static site
         run: npm run build
+      - name: Normalize GitHub Pages asset directory
+        run: |
+          test -d dist/client/voltura-x-mejalism/_next
+          mv dist/client/voltura-x-mejalism/_next dist/client/_next
+          rmdir dist/client/voltura-x-mejalism
       - name: Disable Jekyll processing
         run: touch dist/client/.nojekyll
       - name: Verify framework assets
         run: |
           test -f dist/client/.nojekyll
-          find dist/client -path '*/_next/static/css/*.css' -type f -print -quit | grep -q .
-          find dist/client -path '*/_next/static/chunks/*.js' -type f -print -quit | grep -q .
+          find dist/client/_next/static/css -type f -name '*.css' -print -quit | grep -q .
+          find dist/client/_next/static/chunks -type f -name '*.js' -print -quit | grep -q .
       - name: Archive Pages artifact
         run: |
           tar \
