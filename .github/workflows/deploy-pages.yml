@@ -37,10 +37,30 @@ jobs:
         run: npm run build
       - name: Disable Jekyll processing
         run: touch dist/client/.nojekyll
+      - name: Verify framework assets
+        run: |
+          test -f dist/client/.nojekyll
+          find dist/client -path '*/_next/static/css/*.css' -type f -print -quit | grep -q .
+          find dist/client -path '*/_next/static/chunks/*.js' -type f -print -quit | grep -q .
+      - name: Archive Pages artifact
+        run: |
+          tar \
+            --dereference --hard-dereference \
+            --directory dist/client \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='.vite' \
+            --exclude='.assetsignore' \
+            --exclude='._*' \
+            -cvf "$RUNNER_TEMP/artifact.tar" \
+            .
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-artifact@v4
         with:
-          path: dist/client
+          name: github-pages
+          path: ${{ runner.temp }}/artifact.tar
+          retention-days: 1
+          if-no-files-found: error
 
   deploy:
     environment:
