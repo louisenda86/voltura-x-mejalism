@@ -1,39 +1,35 @@
 import type { Metadata, Viewport } from "next";
-import { headers } from "next/headers";
 import "./globals.css";
 
-const title = "Voltura Power & Engineering | Bintulu, Sarawak";
+const title = "voltura/engineering/mejalism";
 const description = "Reliable electrical and mechanical installation, maintenance and engineering support for homes, businesses and growing industry in Bintulu, Sarawak.";
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://voltura-engineering-bintulu.moailabs.chatgpt.site";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const requestHeaders = await headers();
-  const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host") ?? "localhost:3000";
-  const protocol = requestHeaders.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
-  const origin = `${protocol}://${host}`;
+export const dynamic = "force-static";
 
-  return {
-    metadataBase: new URL(origin),
+export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
+  title,
+  description,
+  keywords: ["electrical services Bintulu", "mechanical services Bintulu", "engineering Sarawak", "Voltura Engineering"],
+  authors: [{ name: "Voltura Power & Engineering" }],
+  icons: { icon: `${basePath}/favicon.svg`, shortcut: `${basePath}/favicon.svg` },
+  openGraph: {
     title,
     description,
-    keywords: ["electrical services Bintulu", "mechanical services Bintulu", "engineering Sarawak", "Voltura Engineering"],
-    authors: [{ name: "Voltura Power & Engineering" }],
-    icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
-    openGraph: {
-      title,
-      description,
-      type: "website",
-      locale: "en_MY",
-      siteName: "Voltura Power & Engineering",
-      images: [{ url: `${origin}/og.png`, width: 1746, height: 912, alt: "Voltura electrical-to-data-infrastructure engineering visual" }],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: [`${origin}/og.png`],
-    },
-  };
-}
+    type: "website",
+    locale: "en_MY",
+    siteName: title,
+    images: [{ url: `${siteUrl}/og.png`, width: 1746, height: 912, alt: "Voltura electrical-to-data-infrastructure engineering visual" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+    images: [`${siteUrl}/og.png`],
+  },
+};
 
 export const viewport: Viewport = {
   width: "device-width",
